@@ -1,0 +1,32 @@
+[
+  {
+    "file": "farmhouse-kitchen.stl",
+    "triangles": 32872,
+    "meshes": 326,
+    "dimensionsMM": [
+      372.4999973475933,
+      259.99999046325684,
+      170.24999884516
+    ]
+  },
+  {
+    "file": "refrigerator-assembled.stl",
+    "triangles": 18180,
+    "meshes": 85,
+    "dimensionsMM": [
+      59.94582263380289,
+      69.1250001937151,
+      114.74999991804361
+    ]
+  },
+  {
+    "file": "refrigerator-see-inside.stl",
+    "triangles": 17588,
+    "meshes": 81,
+    "dimensionsMM": [
+      152.59847689899092,
+      99.04966390864452,
+      114.74999991804361
+    ]
+  }
+]

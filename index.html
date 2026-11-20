@@ -1,0 +1,223 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Hearth — The farmhouse refrigerator</title>
+    <link rel="stylesheet" href="src/styles.css" />
+  </head>
+  <body>
+    <header>
+      <a class="brand" href="#">Hearth<span class="brand-mark">✳</span></a
+      ><span class="edition">A LITTLE SCIENCE AT HOME</span
+      ><button id="guideButton">How it works</button>
+    </header>
+    <main>
+      <section class="experience">
+        <div class="heading">
+          <div>
+            <p class="eyebrow">THE FARMHOUSE COLLECTION</p>
+            <h1>A cooler kind of home.</h1>
+          </div>
+          <p class="intro">
+            A familiar kitchen.<br />A hidden heat-transfer story.
+          </p>
+        </div>
+        <div id="stage">
+          <div id="startup" role="status">Preparing your kitchen…</div>
+          <div class="stage-top">
+            <span id="status">Cooling</span>
+            <div>
+              <button id="labels" aria-pressed="true">Labels</button>
+            </div>
+          </div>
+          <div id="tags"></div>
+          <div class="stage-bottom">
+            <div class="segmented" aria-label="View mode">
+              <button data-mode="home" aria-pressed="true">Kitchen</button
+              ><button data-mode="cutaway" aria-pressed="false">
+                See inside</button>
+            </div>
+            <button id="door" aria-pressed="false">Open door</button>
+          </div>
+          <p class="orbit-hint">Drag to orbit · Scroll to zoom</p>
+        </div>
+        <div class="story">
+          <span class="story-icon" id="storyIcon">❄</span>
+          <div>
+            <h2 id="storyTitle">Cold food. Warm kitchen.</h2>
+            <p id="storyText">
+              The refrigerator moves heat out of the cabinet and releases it
+              into the room. Open the door, or look inside the cooling loop.
+            </p>
+          </div>
+        </div>
+        <nav class="cycle" aria-label="Refrigeration cycle">
+          <button data-part="compressor">
+            <span class="dot hot"></span>Compressor<small
+              >Raise pressure</small
+            ></button
+          ><button data-part="condenser">
+            <span class="dot warm"></span>Condenser<small
+              >Release heat</small
+            ></button
+          ><button data-part="capillary">
+            <span class="dot gold"></span>Capillary<small
+              >Drop pressure</small
+            ></button
+          ><button data-part="evaporator">
+            <span class="dot cold"></span>Evaporator<small>Absorb heat</small>
+          </button>
+        </nav>
+      </section>
+      <aside>
+        <div class="console-heading">
+          <h2>The cooling notebook</h2>
+          <span>SIMULATED</span>
+        </div>
+        <div class="temperature">
+          <div>
+            <span>Cabinet temperature</span
+            ><strong><b id="cabinet">8.0</b><em>°C</em></strong>
+          </div>
+          <svg viewBox="0 0 120 45" aria-label="Recent cabinet temperature">
+            <path id="trend" d="M0 30L120 30" />
+          </svg>
+          <p id="thermostatState">Pulling heat out of the cabinet</p>
+        </div>
+        <div class="metrics">
+          <div><span>Cooling rate</span><b id="cooling">—</b></div>
+          <div><span>Electrical power</span><b id="power">—</b></div>
+          <div><span>Evaporator</span><b id="evap">—</b></div>
+          <div><span>Cooling COP</span><b id="cop">—</b></div>
+        </div>
+        <section class="controls">
+          <label for="setpoint"
+            >Thermostat <output id="setpointOut">4 °C</output></label
+          ><input
+            id="setpoint"
+            type="range"
+            min="2"
+            max="8"
+            step="0.5"
+            value="4"
+          />
+          <div class="range-ends"><span>2 °C</span><span>8 °C</span></div>
+          <label for="displacement"
+            >Compressor displacement
+            <output id="displacementOut">6 cm³</output></label
+          ><input
+            id="displacement"
+            type="range"
+            min="3"
+            max="10"
+            step="0.5"
+            value="6"
+          />
+          <div class="range-ends"><span>3 cm³</span><span>10 cm³</span></div>
+          <label for="insulation">Cabinet insulation</label
+          ><select id="insulation">
+            <option value="foam">Polyurethane foam</option>
+            <option value="glass">Fiberglass</option>
+            <option value="coir">Coconut coir</option>
+          </select>
+          <div class="material-info">
+            <span id="conductivity">k = 0.025 W/(m·K)</span
+            ><span id="leak">— wall leakage</span>
+          </div>
+        </section>
+        <details id="readings">
+          <summary>More operating data</summary>
+          <dl>
+            <dt>Refrigerant mass flow</dt>
+            <dd id="mass">—</dd>
+            <dt>Pressure lift</dt>
+            <dd id="pressure">—</dd>
+            <dt>Heat released</dt>
+            <dd id="rejected">—</dd>
+            <dt>Cooling / swept volume</dt>
+            <dd id="volumetric">—</dd>
+            <dt>Energy used</dt>
+            <dd id="energy">—</dd>
+            <dt>Session cost</dt>
+            <dd id="cost">—</dd>
+          </dl>
+          <label for="tariff">Electricity rate (₱/kWh)</label
+          ><input
+            id="tariff"
+            type="number"
+            min="0"
+            max="100"
+            step="0.5"
+            value="12"
+          />
+        </details>
+        <div class="session">
+          <label for="speed">Time scale</label
+          ><select id="speed">
+            <option value="1">Real time</option>
+            <option value="60" selected>1 second = 1 minute</option>
+            <option value="300">1 second = 5 minutes</option>
+          </select>
+          <div class="actions">
+            <button id="pause">Pause</button><button id="reset">Reset</button>
+          </div>
+          <p>Elapsed <span id="elapsed">00:00</span> · Kitchen 28 °C</p>
+        </div>
+      </aside>
+    </main>
+    <dialog id="guide">
+      <button id="closeGuide" aria-label="Close guide">Close</button>
+      <p class="eyebrow">INSIDE THE EVERYDAY</p>
+      <h2>A refrigerator moves heat.</h2>
+      <p>
+        The compressor draws in low-pressure vapor and compresses it. The
+        condenser releases heat to the kitchen, turning the refrigerant into
+        liquid. A fixed capillary tube drops its pressure. Inside the cabinet,
+        the evaporator absorbs heat as the refrigerant boils.
+      </p>
+      <h3>Try a small experiment</h3>
+      <ol>
+        <li>Open the door and watch the cabinet warm.</li>
+        <li>Choose “See inside” to follow the colored flow markers.</li>
+        <li>Change the insulation and compare wall leakage.</li>
+        <li>Raise the thermostat and watch the compressor cycle off.</li>
+      </ol>
+      <h3>About this model</h3>
+      <p>
+        This is an educational single-compartment refrigerator. Representative
+        properties and a simplified R600a-like pressure curve are used, not a
+        refrigerant property solver or appliance rating. Cooling, electrical
+        input and rejected heat satisfy Q<sub>out</sub> = Q<sub>in</sub> + W.
+        The thermostat uses ±0.5 °C hysteresis.
+      </p>
+      <p>
+        Wall heat conduction uses a 3.2 m² surface, 50 mm insulation and fixed
+        surface-film resistances. Material conductivities are illustrative dry
+        values; moisture and construction change them. Cabinet thermal capacity
+        is 18 kJ/K. Opening the door adds a sensible heat load; humidity, frost,
+        defrost, food loading and detailed pressure equalization are omitted.
+      </p>
+      <p>
+        The front-facing cooling loop is separated from the cabinet for
+        teaching; the condenser normally sits behind the cabinet. The piston and
+        fan run in visual slow motion. Door opening changes heat load;
+        inspection modes do not. The adjustable electricity price is an example,
+        not a current tariff. Pause freezes both physics and mechanical
+        animation.
+      </p>
+      <p>
+        Read more:
+        <a
+          href="https://www.danfoss.com/en-in/about-danfoss/our-businesses/cooling/the-fridge-how-it-works/"
+          target="_blank"
+          rel="noreferrer"
+          >Danfoss: how a refrigerator works</a
+        >.
+      </p>
+    </dialog>
+    <script src="src/errors.js"></script>
+    <script src="vendor/three.min.js"></script>
+    <script type="module" src="src/app.js"></script>
+  </body>
+</html>
