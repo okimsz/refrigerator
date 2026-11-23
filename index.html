@@ -220,6 +220,35 @@
             <span id="conductivity">k = 0.025 W/(m·K)</span
             ><span id="leak">— wall leakage</span>
           </div>
+          <div class="threshold-controls">
+            <div>
+              <label for="tolerance"
+                >Tolerance <output id="toleranceOut">±0.5 °C</output></label
+              ><input
+                id="tolerance"
+                type="range"
+                min="0.25"
+                max="2"
+                step="0.25"
+                value="0.5"
+              /><small>±0.25–2 °C</small>
+            </div>
+            <div>
+              <label for="thickness"
+                >Thickness <output id="thicknessOut">50 mm</output></label
+              ><input
+                id="thickness"
+                type="range"
+                min="20"
+                max="100"
+                step="5"
+                value="50"
+              /><small>20–100 mm</small>
+            </div>
+          </div>
+          <p id="thresholdReadout" class="threshold-readout">
+            ON above 4.5 °C · OFF below 3.5 °C
+          </p>
         </section>
         <details id="readings">
           <summary>More operating data</summary>
@@ -301,15 +330,19 @@
         properties and a simplified R600a-like pressure curve are used, not a
         refrigerant property solver or appliance rating. Cooling, electrical
         input and rejected heat satisfy Q<sub>out</sub> = Q<sub>in</sub> + W.
-        The thermostat uses ±0.5 °C hysteresis.
+        Thermostat tolerance is adjustable from ±0.25 to ±2 °C (default ±0.5
+        °C). Cooling switches on above target plus tolerance and off below
+        target minus tolerance; between thresholds it retains its previous
+        state.
       </p>
       <p>
-        Wall heat conduction uses a 3.2 m² surface, 50 mm insulation and fixed
-        surface-film resistances. Material conductivities are illustrative dry
-        values; moisture and construction change them. Cabinet thermal capacity
-        is 18 kJ/K. Opening the door adds a sensible heat load; humidity, frost,
-        defrost and detailed pressure equalization are omitted. Grocery loads
-        use a separate lumped temperature and 2.5 W/K heat exchange per load.
+        Wall heat conduction uses a 3.2 m² surface, adjustable 20–100 mm
+        insulation (default 50 mm) and fixed surface-film resistances. Material
+        conductivities are illustrative dry values; moisture and construction
+        change them. Cabinet thermal capacity is 18 kJ/K. Opening the door adds
+        a sensible heat load; humidity, frost, defrost and detailed pressure
+        equalization are omitted. Grocery loads use a separate lumped
+        temperature and 2.5 W/K heat exchange per load.
       </p>
       <p>
         The front-facing cooling loop is separated from the cabinet for

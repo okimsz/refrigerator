@@ -7,6 +7,8 @@ export function createState() {
   return {
     temperature: 8,
     setpoint: 4,
+    tolerance: 0.5,
+    thickness: 50,
     displacement: 6,
     insulation: "foam",
     door: false,
@@ -42,7 +44,8 @@ export function startChallenge(s) {
 export function readings(s) {
   const k = materials[s.insulation].k,
     ambient = 28;
-  const leak = (3.2 * (ambient - s.temperature)) / (0.05 / k + 0.28);
+  const leak =
+    (3.2 * (ambient - s.temperature)) / (s.thickness / 1000 / k + 0.28);
   const doorLoad = s.door ? 9 * Math.max(0, ambient - s.temperature) : 0;
   const te = Math.min(-3, s.temperature - 12),
     tc = ambient + 12;
@@ -80,8 +83,8 @@ export function step(s, dt) {
   if (s.challenge?.active) remaining = Math.min(remaining, 86400 - s.elapsed);
   while (remaining > 0) {
     const h = Math.min(remaining, 0.5);
-    if (s.temperature > s.setpoint + 0.5) s.on = true;
-    else if (s.temperature < s.setpoint - 0.5) s.on = false;
+    if (s.temperature > s.setpoint + s.tolerance) s.on = true;
+    else if (s.temperature < s.setpoint - s.tolerance) s.on = false;
     const r = readings(s);
     for (const item of s.groceries)
       item.temperature -=

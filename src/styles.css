@@ -879,3 +879,29 @@ button:disabled {
     ),
     #946035;
 }
+.threshold-controls {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
+  margin-top: 14px;
+}
+.threshold-controls label {
+  font-size: 12px;
+}
+.threshold-controls small {
+  font: 11px Arial;
+  color: #627058;
+}
+.threshold-readout {
+  font: 12px/1.4 Arial;
+  color: #344d3d;
+  margin: 8px 0;
+}
+.threshold-controls output {
+  float: none;
+  display: block;
+  margin-top: 4px;
+}
+.threshold-controls input[type="range"] {
+  margin-bottom: 5px;
+}

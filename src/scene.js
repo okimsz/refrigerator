@@ -621,6 +621,8 @@ export function createScene(host, onPick) {
     rightWall.visible = mode === "home";
     insulationLayer.visible = mode !== "home";
     insulationLayer.material = insulationMaterials[s.insulation];
+    insulationLayer.scale.x = s.thickness / 1000 / 0.095;
+    insulationLayer.position.x = 0.48 + s.thickness / 2000;
     const ease = 1 - Math.exp(-dt * 5);
     spread +=
       ((mode === "home" ? 0 : mode === "cutaway" ? 1 : 1.3) - spread) * ease;

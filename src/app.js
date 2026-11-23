@@ -53,26 +53,42 @@ document.querySelectorAll("[data-part]").forEach(
       choose(b.dataset.part);
     }),
 );
-for (const id of ["setpoint", "displacement", "insulation", "speed", "tariff"])
+for (const id of [
+  "setpoint",
+  "tolerance",
+  "thickness",
+  "displacement",
+  "insulation",
+  "speed",
+  "tariff",
+])
   $(id).addEventListener("input", () => {
     state[id] =
       id === "insulation" ? $(id).value : Math.max(0, Number($(id).value) || 0);
     $("setpointOut").textContent = state.setpoint + " °C";
     $("displacementOut").textContent = state.displacement + " cm³";
-    if (id === "setpoint" || id === "displacement" || id === "insulation") {
+    const visualId =
+      id === "tolerance" ? "setpoint" : id === "thickness" ? "insulation" : id;
+    if (
+      visualId === "setpoint" ||
+      visualId === "displacement" ||
+      visualId === "insulation"
+    ) {
       if (mode === "home") setMode("cutaway");
       $("controlResponse").hidden = false;
-      $("thermalResponse").hidden = id !== "setpoint";
-      $("mechanicalResponse").hidden = id !== "displacement";
-      $("insulationResponse").hidden = id !== "insulation";
+      $("thermalResponse").hidden = visualId !== "setpoint";
+      $("mechanicalResponse").hidden = visualId !== "displacement";
+      $("insulationResponse").hidden = visualId !== "insulation";
       $("responseTitle").textContent =
-        id === "setpoint"
+        visualId === "setpoint"
           ? "Cabinet temperature"
-          : id === "insulation"
+          : visualId === "insulation"
             ? "Exposed cabinet insulation"
             : "Compressor stroke · slow motion";
     }
     const messages = {
+      tolerance: `Cooling turns ON above ${(state.setpoint + state.tolerance).toFixed(2)} °C and OFF below ${(state.setpoint - state.tolerance).toFixed(2)} °C. A wider band allows larger temperature swings.`,
+      thickness: `${state.thickness} mm insulation: the exposed layer changes thickness and wall heat gain responds immediately.`,
       setpoint: `Thermostat target: ${state.setpoint} °C. Cooling cycles around this temperature; the cabinet changes gradually.`,
       displacement: `${state.displacement} cm³ per revolution: piston stroke, refrigerant flow and cooling capacity change together at fixed motor RPM.`,
       insulation: `${$("insulation").selectedOptions[0].text}: the right cabinet wall now exposes this material. Compare its texture and the orange heat-leak arrows.`,
@@ -99,6 +115,8 @@ $("reset").onclick = () => {
   history.length = 0;
   for (const id of [
     "setpoint",
+    "tolerance",
+    "thickness",
     "displacement",
     "insulation",
     "speed",
@@ -128,6 +146,8 @@ $("challengeStart").onclick = () => {
   history.length = 0;
   for (const id of [
     "setpoint",
+    "tolerance",
+    "thickness",
     "displacement",
     "insulation",
     "speed",
@@ -163,9 +183,13 @@ $("closeGuide").onclick = () => $("guide").close();
 let last = performance.now(),
   lastSample = 0;
 function telemetry(r) {
+  $("toleranceOut").textContent = "±" + state.tolerance + " °C";
+  $("thicknessOut").textContent = state.thickness + " mm";
+  $("thresholdReadout").textContent =
+    `ON above ${(state.setpoint + state.tolerance).toFixed(2)} °C · OFF below ${(state.setpoint - state.tolerance).toFixed(2)} °C`;
   $("insulationSwatch").className = "insulation-swatch " + state.insulation;
   $("insulationDescription").textContent =
-    `${$("insulation").selectedOptions[0].text} · 50 mm layer · k = ${r.k.toFixed(3)} W/(m·K) · ${r.leak.toFixed(0)} W wall heat gain.`;
+    `${$("insulation").selectedOptions[0].text} · ${state.thickness} mm layer · k = ${r.k.toFixed(3)} W/(m·K) · ${r.leak.toFixed(0)} W wall heat gain.`;
   const rate =
     ((r.leak + r.doorLoad + r.groceryHeat + (state.door ? 2 : 0) - r.cooling) /
       18000) *

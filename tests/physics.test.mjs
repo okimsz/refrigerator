@@ -83,3 +83,32 @@ test("door left open fails the temperature objective", () => {
   assert.equal(s.challenge.passed, false);
   assert.ok(s.challenge.inRange / s.challenge.monitored < 0.95);
 });
+test("adjustable thresholds retain state inside band and switch outside", () => {
+  const s = createState();
+  s.setpoint = 4;
+  s.tolerance = 1;
+  s.speed = 1;
+  s.on = false;
+  s.temperature = 4.8;
+  step(s, 0.01);
+  assert.equal(s.on, false);
+  s.temperature = 5.1;
+  step(s, 0.01);
+  assert.equal(s.on, true);
+  s.temperature = 3.2;
+  step(s, 0.01);
+  assert.equal(s.on, true);
+  s.temperature = 2.9;
+  step(s, 0.01);
+  assert.equal(s.on, false);
+});
+test("thicker walls reduce conductive heat gain for every material", () => {
+  const s = createState();
+  for (const material of ["foam", "glass", "coir"]) {
+    s.insulation = material;
+    s.thickness = 20;
+    const thin = readings(s).leak;
+    s.thickness = 100;
+    assert.ok(readings(s).leak < thin);
+  }
+});
