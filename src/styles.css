@@ -906,8 +906,8 @@ button:disabled {
   margin-bottom: 5px;
 }
 .controls {
-  --slider-accent: #7546df;
-  --slider-empty: #dcdde0;
+  --slider-accent: #a6753d;
+  --slider-empty: #d8d0bf;
 }
 .slider-control {
   position: relative;
@@ -954,25 +954,25 @@ button:disabled {
   width: 16px;
   height: 16px;
   border-radius: 50%;
-  background: #fff;
-  border: 1px solid #a68ad9;
+  background: #fff9ed;
+  border: 1px solid #79552f;
   margin-top: -5.5px;
-  box-shadow: 0 1px 3px #30214626;
+  box-shadow: 0 1px 3px #79552f26;
   transition: box-shadow 0.15s;
 }
 .controls .slider-control input[type="range"]::-moz-range-thumb {
   width: 14px;
   height: 14px;
   border-radius: 50%;
-  background: #fff;
-  border: 1px solid #a68ad9;
-  box-shadow: 0 1px 3px #30214626;
+  background: #fff9ed;
+  border: 1px solid #79552f;
+  box-shadow: 0 1px 3px #79552f26;
 }
 .controls .slider-control input[type="range"]:hover::-webkit-slider-thumb {
-  box-shadow: 0 0 0 4px #7546df20;
+  box-shadow: 0 0 0 4px #a6753d20;
 }
 .controls .slider-control input[type="range"]:focus-visible {
-  outline: 2px solid #7546df;
+  outline: 2px solid #a6753d;
   outline-offset: 4px;
   border-radius: 5px;
 }
@@ -988,15 +988,15 @@ button:disabled {
     sans-serif;
   white-space: nowrap;
   pointer-events: none;
-  box-shadow: 0 1px 2px #32214c18;
+  box-shadow: 0 1px 2px #79552f18;
 }
 .controls label output {
   font:
     12px Arial,
     sans-serif;
-  color: #6340aa;
-  background: #faf8ff;
-  border: 1px solid #b39bdc;
+  color: #344d3d;
+  background: #fff9ed;
+  border: 1px solid #a6753d;
   border-radius: 4px;
   padding: 3px 6px;
   min-width: 48px;
