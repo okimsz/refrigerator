@@ -22,6 +22,17 @@ npm run build
 
 Open `dist/farmhouse-refrigerator.html` directly in Chrome or Edge. This single file embeds Three.js, CSS and JavaScript. WebGL/hardware acceleration is required. The included Three.js MIT license is retained in the bundle.
 
+## Deploy on Render
+
+Create a **Static Site** in the Render dashboard and connect `okimsz/refrigerator`.
+Use branch `main`, leave Root Directory blank, set Build Command to `npm run build`,
+and Publish Directory to `dist`. No start command or environment variables are needed.
+Click **Deploy Static Site**. Render provides the public URL when deployment finishes.
+
+Alternatively, create a Blueprint using the included `render.yaml`.
+The build writes `dist/index.html` for hosting and retains the standalone
+`dist/farmhouse-refrigerator.html` for offline use. No dependency installation is required.
+
 ## Files
 
 - `models/`: STL exports of the kitchen, assembled refrigerator and inspection view; see its README for scale and printing limitations.
