@@ -50,6 +50,14 @@ Run `npm test` for physics checks. No npm install is needed. The custom bundler 
 
 Educational, single-temperature cabinet, 18 kJ/K thermal capacity, 28 °C room, 3.2 m² wall area, 50 mm insulation. Representative dry conductivity: foam .025, fiberglass .040, coir .055 W/(m·K); construction and moisture change real values. Thermostat hysteresis ±0.5 °C. Cooling uses compressor displacement, nominal 2900 rpm, volumetric efficiency .65 and a representative suction vapor density of 2.1 kg/m³ and refrigeration effect of 210 kJ/kg. COP is .39 of Carnot COP. Pressure lift uses a rough R600a-like exponential approximation, not a property library. No quantitative appliance performance claim is made.
 
-Opening the door adds sensible heat infiltration and 2 W lighting. Inspection opens the visual shell without changing the physical door state. The rear circuit is pulled forward and separated for teaching; normally the evaporator is inside and the condenser behind the cabinet. Mechanism and flow markers are slowed down. Off-cycle pressure equalization, frost, humidity, defrost and changing food loads are omitted. Session cost uses an editable example tariff, not a current utility price.
+Opening the door adds sensible heat infiltration and 2 W lighting. Inspection opens the visual shell without changing the physical door state. The rear circuit is pulled forward and separated for teaching; normally the evaporator is inside and the condenser behind the cabinet. Mechanism and flow markers are slowed down. Off-cycle pressure equalization, frost, humidity and defrost are omitted. Session cost uses an editable example tariff, not a current utility price.
+
+## Interactive experiments
+
+Add up to six warm grocery loads. Milk, vegetables and leftovers start at 28 °C with representative lumped heat capacities of 3.9, 5.7 and 4.2 kJ/K respectively. Each load exchanges heat with the cabinet at 2.5 W/K; energy removed from groceries is added to cabinet air/contents. Grocery colors fade from warm orange to cool blue. These are illustrative loads, not food-safety predictions.
+
+Blue arrows show internal circulation when cooling runs and the cabinet is visually open. Orange arrows show physical door infiltration and wall heat leakage; wall arrow size follows insulation heat loss. Compressor displacement changes piston stroke and flow-marker speed at fixed nominal motor RPM. Thermostat changes affect the physical on/off cycle rather than instantly changing temperature.
+
+The 24h challenge starts at 4 °C with warm milk and vegetables and default controls. Its game target is at least 95% of monitored time in 3–5 °C after one hour of settling and no more than 0.60 kWh over the full day. Additional loads are locked during the challenge for consistency. Completion pauses the simulation. Restart resets the challenge; Reset returns to free exploration. At 3600×, one simulated day takes about 24 seconds at normal rendering rates. Time acceleration does not accelerate the mechanical teaching animation.
 
 Reference: [Danfoss — How a refrigerator works](https://www.danfoss.com/en-in/about-danfoss/our-businesses/cooling/the-fridge-how-it-works/).

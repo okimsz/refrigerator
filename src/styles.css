@@ -716,3 +716,65 @@ dialog a {
     display: none;
   }
 }
+:root {
+  --experiment-accent: #b47b43;
+}
+.experience {
+  grid-template-rows: auto auto minmax(200px, 1fr) auto auto;
+}
+.experiment {
+  border: 1px solid var(--line);
+  border-radius: 7px;
+  padding: 10px 12px;
+  background: #eeeddf;
+}
+.experiment-actions {
+  display: flex;
+  gap: 8px;
+}
+.experiment-actions select {
+  width: auto;
+  flex: 1;
+  min-width: 0;
+}
+.experiment-actions button {
+  white-space: nowrap;
+}
+.experiment p {
+  font:
+    12px/1.4 Arial,
+    sans-serif;
+  color: #52634c;
+  margin: 7px 0 0;
+}
+#challengePanel {
+  margin-top: 7px;
+  font:
+    12px/1.4 Arial,
+    sans-serif;
+}
+#challengePanel progress {
+  width: 100%;
+  height: 6px;
+  display: block;
+  margin-bottom: 5px;
+  accent-color: #526e43;
+}
+button:disabled {
+  opacity: 0.5;
+  cursor: default;
+}
+@media (max-width: 900px) {
+  .experience {
+    grid-template-rows: auto auto minmax(340px, 54dvh) auto auto;
+  }
+  .experiment-actions {
+    flex-wrap: wrap;
+  }
+  .experiment-actions select {
+    flex-basis: 100%;
+  }
+  .experiment-actions button {
+    flex: 1;
+  }
+}

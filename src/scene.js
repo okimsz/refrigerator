@@ -385,6 +385,38 @@ export function createScene(host, onPick) {
     0.35,
     0.04,
   );
+  const groceryGroup = new T.Group();
+  liner.add(groceryGroup);
+  const groceryModels = [];
+  const airArrows = [],
+    leakArrows = [];
+  let showAir = true,
+    airPhase = 0,
+    flowPhase = 0;
+  for (let i = 0; i < 18; i++) {
+    const arrow = new T.ArrowHelper(
+      new T.Vector3(0, -1, 0),
+      new T.Vector3(),
+      0.15,
+      i < 10 ? 0x438fae : 0xda7947,
+      0.065,
+      0.035,
+    );
+    fridge.add(arrow);
+    airArrows.push(arrow);
+  }
+  for (let i = 0; i < 5; i++) {
+    const arrow = new T.ArrowHelper(
+      new T.Vector3(-1, 0, 0),
+      new T.Vector3(0.95, 0.55 + i * 0.32, 0.3),
+      0.35,
+      0xda7947,
+      0.1,
+      0.06,
+    );
+    fridge.add(arrow);
+    leakArrows.push(arrow);
+  }
   const tags = [];
   const tagRoot = document.getElementById("tags");
   for (const [key, text, pos] of [
@@ -512,13 +544,89 @@ export function createScene(host, onPick) {
     doorPivot.rotation.y = doorAngle;
     doorPivot.position.x = -0.57 - (mode === "exploded" ? spread * 0.3 : 0);
     interiorLight.intensity = s.door || mode !== "home" ? 1.2 : 0;
+    if (!s.paused) {
+      airPhase += dt;
+      if (s.on) flowPhase += (dt * 2.6 * s.displacement) / 6;
+    }
+    while (groceryModels.length > s.groceries.length) {
+      const model = groceryModels.pop();
+      groceryGroup.remove(model);
+      model.geometry.dispose();
+      model.material.dispose();
+    }
+    for (let i = 0; i < s.groceries.length; i++) {
+      if (
+        groceryModels[i] &&
+        groceryModels[i].userData.kind !== s.groceries[i].kind
+      ) {
+        const old = groceryModels[i];
+        groceryGroup.remove(old);
+        old.geometry.dispose();
+        old.material.dispose();
+        groceryModels[i] = null;
+      }
+      if (!groceryModels[i]) {
+        const material = mat("#d98248");
+        const item = s.groceries[i];
+        const g =
+          item.kind === "vegetables"
+            ? new T.SphereGeometry(0.075, 16, 12)
+            : new T.BoxGeometry(0.13, item.kind === "milk" ? 0.19 : 0.1, 0.14);
+        const model = mesh(
+          g,
+          material,
+          groceryGroup,
+          -0.28 + (i % 3) * 0.28,
+          2.02,
+          -0.16 + Math.floor(i / 3) * 0.36,
+        );
+        model.userData.kind = item.kind;
+        groceryModels[i] = model;
+      }
+      groceryModels[i].material.color
+        .copy(new T.Color("#619fae"))
+        .lerp(
+          new T.Color("#db7843"),
+          Math.max(0, Math.min(1, (s.groceries[i].temperature - 4) / 24)),
+        );
+    }
+    airArrows.forEach((arrow, i) => {
+      const t = (airPhase * 0.3 + (i % 10) / 10) % 1;
+      arrow.visible =
+        showAir && (i < 10 ? s.on && (s.door || mode !== "home") : s.door);
+      if (i < 10) {
+        arrow.position.set(-0.34 + 0.68 * (i % 2), 2.02 - t * 1.55, 0.48);
+        arrow.setDirection(
+          new T.Vector3(i % 2 === 0 ? 0.15 : -0.15, -1, 0).normalize(),
+        );
+      } else {
+        arrow.position.set(
+          -0.25 + (i % 3) * 0.25,
+          0.7 + (i % 4) * 0.3,
+          1.2 - t * 0.7,
+        );
+        arrow.setDirection(new T.Vector3(0, 0, -1));
+      }
+    });
+    leakArrows.forEach((arrow, i) => {
+      arrow.visible = showAir;
+      const strength = Math.max(0.3, Math.min(1.6, r.leak / 40));
+      arrow.setLength(
+        0.22 + strength * 0.2,
+        0.06 + strength * 0.05,
+        0.025 + strength * 0.04,
+      );
+      arrow.position.x = 0.95 + Math.sin(airPhase * 2 + i) * 0.04;
+    });
     if (!s.paused && r.rpm) {
       phase += dt * 2.6;
       fan.rotation.z -= dt * 8;
-      const cx = 0.035 * Math.cos(phase),
-        cy = 0.035 * Math.sin(phase),
+      const crankRadius = (0.035 * s.displacement) / 6;
+      const cx = crankRadius * Math.cos(phase),
+        cy = crankRadius * Math.sin(phase),
         px = cx + Math.sqrt(0.11 ** 2 - cy ** 2);
       crank.rotation.z = phase;
+      crank.scale.x = s.displacement / 6;
       crank.position.set(cx / 2, 0.08 + cy / 2, 0);
       piston.position.set(px, 0.08, 0);
       rod.position.set((cx + px) / 2, 0.08 + cy / 2, 0);
@@ -526,7 +634,7 @@ export function createScene(host, onPick) {
     }
     for (const c of circuits)
       for (let i = 0; i < c.dots.length; i++) {
-        const t = (phase * 0.035 + i / c.dots.length) % 1;
+        const t = (flowPhase * 0.035 + i / c.dots.length) % 1;
         const p = c.path.getPointAt(t),
           tangent = c.path.getTangentAt(t);
         c.dots[i].position.copy(p);
@@ -566,6 +674,9 @@ export function createScene(host, onPick) {
     },
     setLabels(v) {
       showLabels = v;
+    },
+    setAirflow(v) {
+      showAir = v;
     },
     setTour(v) {
       orbit = v;

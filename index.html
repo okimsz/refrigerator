@@ -23,12 +23,38 @@
             A familiar kitchen.<br />A hidden heat-transfer story.
           </p>
         </div>
+        <section class="experiment" aria-label="Kitchen experiments">
+          <div class="experiment-actions">
+            <select id="groceryKind" aria-label="Warm groceries">
+              <option value="milk">1 L milk · 28 °C</option>
+              <option value="vegetables">1.5 kg vegetables · 28 °C</option>
+              <option value="leftovers">
+                1.2 kg leftovers · 28 °C
+              </option></select
+            ><button id="addGroceries">Add groceries</button
+            ><button id="challengeStart">Start 24h challenge</button>
+          </div>
+          <p id="experimentInfo" aria-live="polite">
+            Load warm groceries and watch them cool. Use See inside to reveal
+            the airflow.
+          </p>
+          <div id="challengePanel" hidden>
+            <progress
+              id="challengeProgress"
+              max="86400"
+              value="0"
+              aria-label="Challenge progress"
+            ></progress
+            ><span id="challengeStats"></span>
+          </div>
+        </section>
         <div id="stage">
           <div id="startup" role="status">Preparing your kitchen…</div>
           <div class="stage-top">
             <span id="status">Cooling</span>
             <div>
               <button id="labels" aria-pressed="true">Labels</button>
+              <button id="airflow" aria-pressed="true">Airflow</button>
             </div>
           </div>
           <div id="tags"></div>
@@ -36,11 +62,14 @@
             <div class="segmented" aria-label="View mode">
               <button data-mode="home" aria-pressed="true">Kitchen</button
               ><button data-mode="cutaway" aria-pressed="false">
-                See inside</button>
+                See inside
+              </button>
             </div>
             <button id="door" aria-pressed="false">Open door</button>
           </div>
-          <p class="orbit-hint">Drag to orbit · Scroll to zoom</p>
+          <p class="orbit-hint">
+            Blue: cold air · Orange: warm air / heat leakage · Drag to orbit
+          </p>
         </div>
         <div class="story">
           <span class="story-icon" id="storyIcon">❄</span>
@@ -158,6 +187,7 @@
             <option value="1">Real time</option>
             <option value="60" selected>1 second = 1 minute</option>
             <option value="300">1 second = 5 minutes</option>
+            <option value="3600">1 second = 1 hour</option>
           </select>
           <div class="actions">
             <button id="pause">Pause</button><button id="reset">Reset</button>
@@ -177,6 +207,22 @@
         the evaporator absorbs heat as the refrigerant boils.
       </p>
       <h3>Try a small experiment</h3>
+      <p>
+        Add up to six warm grocery loads. Their temperatures and heat transfer
+        are simulated separately from the cabinet. See inside reveals the new
+        items, blue circulating air and orange heat-leak arrows. Larger
+        compressor displacement increases piston stroke and refrigerant flow at
+        the same motor RPM; insulation changes the thickness of heat-leak
+        arrows.
+      </p>
+      <p>
+        The 24-hour challenge resets to 4 °C with warm milk and vegetables,
+        standard controls and a closed door. Keep the cabinet at 3–5 °C for at
+        least 95% of the time after a one-hour settling period, using at most
+        0.60 kWh. This is a game target, not an appliance rating or food-safety
+        assessment. The challenge ends automatically. Restart to try another
+        strategy; Reset returns to free exploration.
+      </p>
       <ol>
         <li>Open the door and watch the cabinet warm.</li>
         <li>Choose “See inside” to follow the colored flow markers.</li>
@@ -196,7 +242,8 @@
         surface-film resistances. Material conductivities are illustrative dry
         values; moisture and construction change them. Cabinet thermal capacity
         is 18 kJ/K. Opening the door adds a sensible heat load; humidity, frost,
-        defrost, food loading and detailed pressure equalization are omitted.
+        defrost and detailed pressure equalization are omitted. Grocery loads
+        use a separate lumped temperature and 2.5 W/K heat exchange per load.
       </p>
       <p>
         The front-facing cooling loop is separated from the cabinet for

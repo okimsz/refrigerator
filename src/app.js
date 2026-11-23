@@ -1,4 +1,10 @@
-import { createState, readings, step } from "./physics.js";
+import {
+  createState,
+  readings,
+  step,
+  addGroceries,
+  startChallenge,
+} from "./physics.js";
 import { createScene } from "./scene.js";
 const $ = (id) => document.getElementById(id);
 let state = createState();
@@ -53,6 +59,15 @@ for (const id of ["setpoint", "displacement", "insulation", "speed", "tariff"])
       id === "insulation" ? $(id).value : Math.max(0, Number($(id).value) || 0);
     $("setpointOut").textContent = state.setpoint + " °C";
     $("displacementOut").textContent = state.displacement + " cm³";
+    const messages = {
+      setpoint: `Thermostat target: ${state.setpoint} °C. Cooling cycles around this temperature; the cabinet changes gradually.`,
+      displacement: `${state.displacement} cm³ per revolution: piston stroke, refrigerant flow and cooling capacity change together at fixed motor RPM.`,
+      insulation: `${$("insulation").selectedOptions[0].text}: watch the orange wall-leak arrows and leakage reading.`,
+      speed: `Simulated time now runs at ${state.speed}×. Mechanical movement stays slowed for visibility.`,
+      tariff: `Session cost now uses ₱${state.tariff}/kWh. This price changes cost, not thermal behavior.`,
+    };
+    $("storyTitle").textContent = "Your change, in motion.";
+    $("storyText").textContent = messages[id];
   });
 $("door").onclick = () => {
   state.door = !state.door;
@@ -80,6 +95,47 @@ $("reset").onclick = () => {
   $("door").setAttribute("aria-pressed", false);
   $("pause").textContent = "Pause";
   setMode("home");
+  $("challengePanel").hidden = true;
+  $("challengeStart").textContent = "Start 24h challenge";
+  $("storyTitle").textContent = "Cold food. Warm kitchen.";
+  $("storyText").textContent =
+    "Add warm groceries, compare insulation, and watch heat move through the kitchen.";
+  document
+    .querySelectorAll("[data-part]")
+    .forEach((b) => b.classList.remove("active"));
+};
+$("addGroceries").onclick = () => {
+  if (addGroceries(state, $("groceryKind").value)) setMode("cutaway");
+};
+$("challengeStart").onclick = () => {
+  startChallenge(state);
+  history.length = 0;
+  for (const id of [
+    "setpoint",
+    "displacement",
+    "insulation",
+    "speed",
+    "tariff",
+  ])
+    $(id).value = state[id];
+  $("setpointOut").textContent = "4 °C";
+  $("displacementOut").textContent = "6 cm³";
+  $("door").textContent = "Open door";
+  $("door").setAttribute("aria-pressed", false);
+  $("challengeStart").textContent = "Restart challenge";
+  $("storyTitle").textContent = "A day in the farmhouse kitchen.";
+  $("storyText").textContent =
+    "Controls reset to standard settings. Keep 3–5 °C after the first hour while staying under the energy budget. Try insulation, displacement and thermostat changes.";
+  document
+    .querySelectorAll("[data-part]")
+    .forEach((b) => b.classList.remove("active"));
+  $("challengePanel").hidden = false;
+  setMode("cutaway");
+};
+$("airflow").onclick = () => {
+  const on = $("airflow").getAttribute("aria-pressed") !== "true";
+  $("airflow").setAttribute("aria-pressed", on);
+  view.setAirflow(on);
 };
 $("labels").onclick = () => {
   const value = $("labels").getAttribute("aria-pressed") !== "true";
@@ -91,6 +147,25 @@ $("closeGuide").onclick = () => $("guide").close();
 let last = performance.now(),
   lastSample = 0;
 function telemetry(r) {
+  $("pause").textContent = state.paused ? "Resume" : "Pause";
+  $("addGroceries").disabled =
+    state.groceries.length >= 6 || !!state.challenge?.active;
+  const food = state.groceries.length
+    ? `Groceries: ${state.groceries.map((g) => g.temperature.toFixed(1) + " °C").join(" / ")} · ${r.groceryHeat.toFixed(0)} W into cabinet.`
+    : "Add warm groceries; See inside reveals their cooling colors and the airflow.";
+  $("experimentInfo").textContent = food;
+  if (state.challenge) {
+    const c = state.challenge,
+      percent = c.monitored ? (100 * c.inRange) / c.monitored : 0;
+    $("challengeProgress").value = Math.min(state.elapsed, 86400);
+    $("challengeStats").textContent =
+      (c.active
+        ? "24h challenge"
+        : c.passed
+          ? "Challenge passed"
+          : "Challenge complete — try again") +
+      ` · ${Math.min(24, state.elapsed / 3600).toFixed(1)}/24 h · ${c.monitored ? percent.toFixed(0) + "% in 3–5 °C" : "1h settling period"} · ${c.energy.toFixed(3)}/0.600 kWh. Targets: ≥95% in range, ≤0.600 kWh.`;
+  }
   $("cabinet").textContent = state.temperature.toFixed(1);
   $("status").textContent = state.paused
     ? "Simulation paused"
