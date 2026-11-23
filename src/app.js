@@ -59,6 +59,16 @@ for (const id of ["setpoint", "displacement", "insulation", "speed", "tariff"])
       id === "insulation" ? $(id).value : Math.max(0, Number($(id).value) || 0);
     $("setpointOut").textContent = state.setpoint + " °C";
     $("displacementOut").textContent = state.displacement + " cm³";
+    if (id === "setpoint" || id === "displacement") {
+      if (mode === "home") setMode("cutaway");
+      $("controlResponse").hidden = false;
+      $("thermalResponse").hidden = id !== "setpoint";
+      $("mechanicalResponse").hidden = id !== "displacement";
+      $("responseTitle").textContent =
+        id === "setpoint"
+          ? "Cabinet temperature"
+          : "Compressor stroke · slow motion";
+    }
     const messages = {
       setpoint: `Thermostat target: ${state.setpoint} °C. Cooling cycles around this temperature; the cabinet changes gradually.`,
       displacement: `${state.displacement} cm³ per revolution: piston stroke, refrigerant flow and cooling capacity change together at fixed motor RPM.`,
@@ -73,6 +83,9 @@ $("door").onclick = () => {
   state.door = !state.door;
   $("door").textContent = state.door ? "Close door" : "Open door";
   $("door").setAttribute("aria-pressed", state.door);
+};
+$("closeResponse").onclick = () => {
+  $("controlResponse").hidden = true;
 };
 $("pause").onclick = () => {
   state.paused = !state.paused;
@@ -147,6 +160,20 @@ $("closeGuide").onclick = () => $("guide").close();
 let last = performance.now(),
   lastSample = 0;
 function telemetry(r) {
+  const rate =
+    ((r.leak + r.doorLoad + r.groceryHeat + (state.door ? 2 : 0) - r.cooling) /
+      18000) *
+    60;
+  $("temperatureResponse").textContent =
+    `${state.temperature.toFixed(1)} °C now → ${state.setpoint.toFixed(1)} °C target`;
+  $("actualMarker").style.left =
+    Math.max(0, Math.min(100, (state.temperature / 28) * 100)) + "%";
+  $("targetMarker").style.left = (state.setpoint / 28) * 100 + "%";
+  $("displacementResponse").textContent =
+    `${state.displacement} cm³/rev · ${(r.mass * 1000).toFixed(2)} g/s · ${r.cooling.toFixed(0)} W cooling`;
+  $("responseEffect").textContent = state.paused
+    ? "Paused — press Resume to see temperature and motion change."
+    : `${state.on ? "Compressor ON" : "Compressor OFF — waiting for cabinet to warm"} · ${rate < 0 ? "Cooling" : "Warming"} ${Math.abs(rate).toFixed(2)} °C/min (simulated). ${r.rejected.toFixed(0)} W released into the kitchen.`;
   $("pause").textContent = state.paused ? "Resume" : "Pause";
   $("addGroceries").disabled =
     state.groceries.length >= 6 || !!state.challenge?.active;

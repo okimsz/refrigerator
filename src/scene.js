@@ -418,6 +418,38 @@ export function createScene(host, onPick) {
     leakArrows.push(arrow);
   }
   const tags = [];
+  const thermalMaterial = new T.MeshBasicMaterial({
+    color: "#62b8df",
+    transparent: true,
+    opacity: 0.13,
+    depthWrite: false,
+    side: T.DoubleSide,
+  });
+  const thermalVolume = box(
+    fridge,
+    0,
+    1.24,
+    0.03,
+    0.9,
+    1.84,
+    0.72,
+    thermalMaterial,
+  );
+  thermalVolume.castShadow = false;
+  thermalVolume.receiveShadow = false;
+  const rejectedArrows = [];
+  for (let i = 0; i < 4; i++) {
+    const arrow = new T.ArrowHelper(
+      new T.Vector3(0.4, 1, 0).normalize(),
+      new T.Vector3(),
+      0.3,
+      0xe57a3c,
+      0.1,
+      0.055,
+    );
+    rig.add(arrow);
+    rejectedArrows.push(arrow);
+  }
   const tagRoot = document.getElementById("tags");
   for (const [key, text, pos] of [
     ["compressor", "Compressor", [-0.23, 0.2, 0.12]],
@@ -544,6 +576,26 @@ export function createScene(host, onPick) {
     doorPivot.rotation.y = doorAngle;
     doorPivot.position.x = -0.57 - (mode === "exploded" ? spread * 0.3 : 0);
     interiorLight.intensity = s.door || mode !== "home" ? 1.2 : 0;
+    thermalVolume.visible = showAir && (mode !== "home" || s.door);
+    thermalMaterial.color
+      .copy(new T.Color("#238dd4"))
+      .lerp(
+        new T.Color("#ed8a45"),
+        Math.max(0, Math.min(1, s.temperature / 28)),
+      );
+    rejectedArrows.forEach((arrow, i) => {
+      arrow.visible = showAir && s.on;
+      arrow.position.set(
+        -0.25 + i * 0.21,
+        2.04 + ((airPhase * 0.23 + i * 0.07) % 0.18),
+        0.08,
+      );
+      arrow.setLength(
+        0.12 + r.rejected / 450,
+        0.07 + r.rejected / 2500,
+        0.04 + r.rejected / 5000,
+      );
+    });
     if (!s.paused) {
       airPhase += dt;
       if (s.on) flowPhase += (dt * 2.6 * s.displacement) / 6;
@@ -621,6 +673,8 @@ export function createScene(host, onPick) {
     if (!s.paused && r.rpm) {
       phase += dt * 2.6;
       fan.rotation.z -= dt * 8;
+    }
+    {
       const crankRadius = (0.035 * s.displacement) / 6;
       const cx = crankRadius * Math.cos(phase),
         cy = crankRadius * Math.sin(phase),
@@ -631,6 +685,17 @@ export function createScene(host, onPick) {
       piston.position.set(px, 0.08, 0);
       rod.position.set((cx + px) / 2, 0.08 + cy / 2, 0);
       rod.rotation.z = Math.atan2(-cy, px - cx);
+      const radius = 9 + s.displacement * 1.4,
+        x = 30 + radius * Math.cos(phase),
+        y = 32 + radius * Math.sin(phase);
+      const end = x + Math.sqrt(90 ** 2 - (y - 32) ** 2);
+      document.getElementById("demoCrank").setAttribute("x2", x);
+      document.getElementById("demoCrank").setAttribute("y2", y);
+      const demoRod = document.getElementById("demoRod");
+      demoRod.setAttribute("x1", x);
+      demoRod.setAttribute("y1", y);
+      demoRod.setAttribute("x2", end);
+      document.getElementById("demoPiston").setAttribute("x", end - 7);
     }
     for (const c of circuits)
       for (let i = 0; i < c.dots.length; i++) {
@@ -643,6 +708,7 @@ export function createScene(host, onPick) {
           tangent,
         );
         c.dots[i].visible = s.on;
+        c.dots[i].scale.setScalar(0.65 + s.displacement / 10);
       }
     if ((orbit || performance.now() - lastInput > 12000) && !drag)
       angle += dt * 0.085;
