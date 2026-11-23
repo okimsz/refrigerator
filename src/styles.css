@@ -850,3 +850,32 @@ button:disabled {
   overflow-y: auto;
   scrollbar-width: thin;
 }
+.insulation-swatch {
+  height: 48px;
+  margin: 8px 0;
+  border: 1px solid #9b8d6a;
+  border-radius: 3px;
+}
+.insulation-swatch.foam {
+  background:
+    radial-gradient(circle, #b39a50 1px, transparent 2px) 0 0/9px 8px,
+    #e5cf87;
+}
+.insulation-swatch.glass {
+  background: repeating-linear-gradient(
+      68deg,
+      transparent 0 3px,
+      #be748c88 4px,
+      transparent 5px 8px
+    ),
+    #efb6be;
+}
+.insulation-swatch.coir {
+  background: repeating-linear-gradient(
+      115deg,
+      transparent 0 3px,
+      #4d311baa 4px,
+      transparent 6px 10px
+    ),
+    #946035;
+}

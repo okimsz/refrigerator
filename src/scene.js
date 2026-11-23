@@ -220,7 +220,67 @@ export function createScene(host, onPick) {
   const shell = new T.Group();
   fridge.add(shell);
   box(shell, -0.53, 1.19, 0, 0.1, 2.15, 0.9, sage);
-  box(shell, 0.53, 1.19, 0, 0.1, 2.15, 0.9, sage);
+  const rightWall = box(shell, 0.53, 1.19, 0, 0.1, 2.15, 0.9, sage);
+  // Procedural cross-section textures: closed-cell foam, glass wool and coir fibers.
+  const insulationMaterials = {};
+  for (const [key, base, fiber] of [
+    ["foam", "#e5cf87", "#b39a50"],
+    ["glass", "#efb6be", "#be748c"],
+    ["coir", "#946035", "#4d311b"],
+  ]) {
+    const canvas = document.createElement("canvas");
+    canvas.width = 256;
+    canvas.height = 256;
+    const ctx = canvas.getContext("2d");
+    ctx.fillStyle = base;
+    ctx.fillRect(0, 0, 256, 256);
+    let seed = 17;
+    const random = () => {
+      seed = (seed * 1664525 + 1013904223) >>> 0;
+      return seed / 4294967296;
+    };
+    for (let i = 0; i < 900; i++) {
+      const x = random() * 256,
+        y = random() * 256;
+      ctx.strokeStyle = i % 3 ? fiber : base;
+      ctx.fillStyle = fiber;
+      ctx.globalAlpha = 0.2 + random() * 0.35;
+      ctx.lineWidth = key === "coir" ? 1.4 : 0.7;
+      ctx.beginPath();
+      if (key === "foam") {
+        ctx.arc(x, y, 1 + random() * 3, 0, Math.PI * 2);
+        ctx.stroke();
+      } else {
+        ctx.moveTo(x, y);
+        ctx.quadraticCurveTo(
+          x + random() * 22 - 11,
+          y + 15,
+          x + random() * 35 - 17,
+          y + 25 + random() * 35,
+        );
+        ctx.stroke();
+      }
+    }
+    const texture = new T.CanvasTexture(canvas);
+    texture.colorSpace = T.SRGBColorSpace;
+    texture.wrapS = texture.wrapT = T.RepeatWrapping;
+    texture.repeat.set(1, 2);
+    insulationMaterials[key] = new T.MeshStandardMaterial({
+      map: texture,
+      roughness: 1,
+    });
+  }
+  const insulationLayer = box(
+    fridge,
+    0.53,
+    1.2,
+    0,
+    0.095,
+    2.03,
+    0.88,
+    insulationMaterials.foam,
+  );
+  insulationLayer.visible = false;
   box(shell, 0, 2.25, 0, 1.16, 0.1, 0.9, sage);
   box(shell, 0, 0.16, 0, 1.16, 0.1, 0.9, sage);
   const backPanel = box(shell, 0, 1.2, -0.43, 1.05, 2.1, 0.08, sage);
@@ -558,6 +618,9 @@ export function createScene(host, onPick) {
   });
   resize.observe(host);
   function update(dt, s, r) {
+    rightWall.visible = mode === "home";
+    insulationLayer.visible = mode !== "home";
+    insulationLayer.material = insulationMaterials[s.insulation];
     const ease = 1 - Math.exp(-dt * 5);
     spread +=
       ((mode === "home" ? 0 : mode === "cutaway" ? 1 : 1.3) - spread) * ease;

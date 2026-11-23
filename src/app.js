@@ -59,20 +59,23 @@ for (const id of ["setpoint", "displacement", "insulation", "speed", "tariff"])
       id === "insulation" ? $(id).value : Math.max(0, Number($(id).value) || 0);
     $("setpointOut").textContent = state.setpoint + " °C";
     $("displacementOut").textContent = state.displacement + " cm³";
-    if (id === "setpoint" || id === "displacement") {
+    if (id === "setpoint" || id === "displacement" || id === "insulation") {
       if (mode === "home") setMode("cutaway");
       $("controlResponse").hidden = false;
       $("thermalResponse").hidden = id !== "setpoint";
       $("mechanicalResponse").hidden = id !== "displacement";
+      $("insulationResponse").hidden = id !== "insulation";
       $("responseTitle").textContent =
         id === "setpoint"
           ? "Cabinet temperature"
-          : "Compressor stroke · slow motion";
+          : id === "insulation"
+            ? "Exposed cabinet insulation"
+            : "Compressor stroke · slow motion";
     }
     const messages = {
       setpoint: `Thermostat target: ${state.setpoint} °C. Cooling cycles around this temperature; the cabinet changes gradually.`,
       displacement: `${state.displacement} cm³ per revolution: piston stroke, refrigerant flow and cooling capacity change together at fixed motor RPM.`,
-      insulation: `${$("insulation").selectedOptions[0].text}: watch the orange wall-leak arrows and leakage reading.`,
+      insulation: `${$("insulation").selectedOptions[0].text}: the right cabinet wall now exposes this material. Compare its texture and the orange heat-leak arrows.`,
       speed: `Simulated time now runs at ${state.speed}×. Mechanical movement stays slowed for visibility.`,
       tariff: `Session cost now uses ₱${state.tariff}/kWh. This price changes cost, not thermal behavior.`,
     };
@@ -160,6 +163,9 @@ $("closeGuide").onclick = () => $("guide").close();
 let last = performance.now(),
   lastSample = 0;
 function telemetry(r) {
+  $("insulationSwatch").className = "insulation-swatch " + state.insulation;
+  $("insulationDescription").textContent =
+    `${$("insulation").selectedOptions[0].text} · 50 mm layer · k = ${r.k.toFixed(3)} W/(m·K) · ${r.leak.toFixed(0)} W wall heat gain.`;
   const rate =
     ((r.leak + r.doorLoad + r.groceryHeat + (state.door ? 2 : 0) - r.cooling) /
       18000) *
