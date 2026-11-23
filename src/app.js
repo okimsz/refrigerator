@@ -9,6 +9,41 @@ import { createScene } from "./scene.js";
 const $ = (id) => document.getElementById(id);
 let state = createState();
 const history = [];
+const styledRanges = [
+  ...document.querySelectorAll('.controls input[type="range"]'),
+].map((input) => {
+  const wrap = document.createElement("div");
+  wrap.className = "slider-control";
+  input.before(wrap);
+  wrap.append(input);
+  const bubble = document.createElement("span");
+  bubble.className = "slider-value";
+  bubble.setAttribute("aria-hidden", "true");
+  wrap.append(bubble);
+  return { input, wrap, bubble, last: null };
+});
+function updateSliderDesign() {
+  for (const slider of styledRanges) {
+    const { input, wrap, bubble } = slider;
+    if (slider.last === input.value) continue;
+    slider.last = input.value;
+    const value = Number(input.value),
+      fraction =
+        (value - Number(input.min)) / (Number(input.max) - Number(input.min)),
+      percent = fraction * 100;
+    wrap.style.setProperty("--fill", percent + "%");
+    bubble.style.left = `calc(${percent}% + ${8 - 16 * fraction}px)`;
+    bubble.style.transform = `translateX(-${percent}%)`;
+    const unit =
+      input.id === "displacement"
+        ? " cm³"
+        : input.id === "thickness"
+          ? " mm"
+          : " °C";
+    bubble.textContent = (input.id === "tolerance" ? "±" : "") + value + unit;
+    input.setAttribute("aria-valuetext", bubble.textContent);
+  }
+}
 const descriptions = {
   compressor: [
     "The small engine of the cooling loop.",
@@ -183,6 +218,7 @@ $("closeGuide").onclick = () => $("guide").close();
 let last = performance.now(),
   lastSample = 0;
 function telemetry(r) {
+  updateSliderDesign();
   $("toleranceOut").textContent = "±" + state.tolerance + " °C";
   $("thicknessOut").textContent = state.thickness + " mm";
   $("thresholdReadout").textContent =

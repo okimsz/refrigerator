@@ -905,3 +905,114 @@ button:disabled {
 .threshold-controls input[type="range"] {
   margin-bottom: 5px;
 }
+.controls {
+  --slider-accent: #7546df;
+  --slider-empty: #dcdde0;
+}
+.slider-control {
+  position: relative;
+  height: 47px;
+  padding-top: 22px;
+  margin: 2px 0 4px;
+  --fill: 0%;
+}
+.controls .slider-control input[type="range"] {
+  appearance: none;
+  -webkit-appearance: none;
+  display: block;
+  width: 100%;
+  height: 24px;
+  margin: 0;
+  padding: 0;
+  background: transparent;
+  cursor: pointer;
+  accent-color: var(--slider-accent);
+  border: 0;
+}
+.controls .slider-control input[type="range"]::-webkit-slider-runnable-track {
+  height: 5px;
+  border-radius: 8px;
+  background: linear-gradient(
+    to right,
+    var(--slider-accent) 0 var(--fill),
+    var(--slider-empty) var(--fill) 100%
+  );
+}
+.controls .slider-control input[type="range"]::-moz-range-track {
+  height: 5px;
+  border-radius: 8px;
+  background: var(--slider-empty);
+}
+.controls .slider-control input[type="range"]::-moz-range-progress {
+  height: 5px;
+  border-radius: 8px;
+  background: var(--slider-accent);
+}
+.controls .slider-control input[type="range"]::-webkit-slider-thumb {
+  appearance: none;
+  -webkit-appearance: none;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: #fff;
+  border: 1px solid #a68ad9;
+  margin-top: -5.5px;
+  box-shadow: 0 1px 3px #30214626;
+  transition: box-shadow 0.15s;
+}
+.controls .slider-control input[type="range"]::-moz-range-thumb {
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: #fff;
+  border: 1px solid #a68ad9;
+  box-shadow: 0 1px 3px #30214626;
+}
+.controls .slider-control input[type="range"]:hover::-webkit-slider-thumb {
+  box-shadow: 0 0 0 4px #7546df20;
+}
+.controls .slider-control input[type="range"]:focus-visible {
+  outline: 2px solid #7546df;
+  outline-offset: 4px;
+  border-radius: 5px;
+}
+.slider-value {
+  position: absolute;
+  top: 0;
+  padding: 3px 6px;
+  background: var(--slider-accent);
+  color: #fff;
+  border-radius: 4px;
+  font:
+    11px/1.3 Arial,
+    sans-serif;
+  white-space: nowrap;
+  pointer-events: none;
+  box-shadow: 0 1px 2px #32214c18;
+}
+.controls label output {
+  font:
+    12px Arial,
+    sans-serif;
+  color: #6340aa;
+  background: #faf8ff;
+  border: 1px solid #b39bdc;
+  border-radius: 4px;
+  padding: 3px 6px;
+  min-width: 48px;
+  text-align: center;
+}
+.controls .range-ends {
+  display: flex;
+  margin: 0 0 14px;
+  font-size: 11px;
+}
+.threshold-controls label output {
+  display: inline-block;
+  min-width: 0;
+  margin-top: 4px;
+}
+.threshold-controls small {
+  display: block;
+  margin-top: 0;
+}
