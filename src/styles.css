@@ -1018,3 +1018,88 @@ button:disabled {
   display: block;
   margin-top: 0;
 }
+.experience {
+  grid-template-rows: minmax(200px, 1fr) auto;
+}
+.stage-dock {
+  position: absolute;
+  z-index: 4;
+  right: 14px;
+  top: 58px;
+  width: min(320px, calc(100% - 28px));
+  max-height: calc(100% - 142px);
+  overflow-y: auto;
+  scrollbar-width: thin;
+}
+.stage-dock details {
+  margin: 0 0 7px;
+  padding: 0;
+  border: 1px solid #bcc6b1;
+  border-radius: 7px;
+  background: #faf8eff2;
+  box-shadow: 0 2px 10px #26382c12;
+}
+.stage-dock summary {
+  padding: 10px 12px;
+  font:
+    14px Arial,
+    sans-serif;
+  cursor: pointer;
+  color: #344d3d;
+}
+.stage-dock summary:focus-visible {
+  outline: 2px solid #a6753d;
+  outline-offset: -3px;
+  border-radius: 7px;
+}
+.stage-dock .experiment {
+  margin: 0;
+  border: 0;
+  border-top: 1px solid var(--line);
+  border-radius: 0;
+  padding: 12px;
+  background: transparent;
+}
+.stage-dock .experiment-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 7px;
+}
+.stage-dock .experiment-actions select {
+  flex-basis: 100%;
+  width: 100%;
+}
+.stage-dock .experiment-actions button {
+  flex: 1;
+  padding: 8px;
+  font-size: 12px;
+}
+.stage-dock .story {
+  padding: 12px;
+  border-top: 1px solid var(--line);
+}
+.stage-dock .story-icon {
+  display: none;
+}
+.stage-dock .story h2 {
+  font-size: 17px;
+  line-height: 1.3;
+}
+.stage-dock .story p {
+  font-size: 13px;
+  line-height: 1.55;
+}
+@media (max-width: 900px) {
+  .experience {
+    grid-template-rows: minmax(480px, 70dvh) auto;
+  }
+  .stage-dock {
+    right: 8px;
+    top: 54px;
+    width: min(280px, calc(100% - 16px));
+  }
+  .stage-dock summary {
+    padding: 9px 10px;
+    font-size: 13px;
+  }
+}

@@ -13,32 +13,10 @@
       ><button id="guideButton">How it works</button>
     </header>
     <main>
-      <section class="experience" aria-label="Interactive refrigerator simulation">
-        <section class="experiment" aria-label="Kitchen experiments">
-          <div class="experiment-actions">
-            <select id="groceryKind" aria-label="Warm groceries">
-              <option value="milk">1 L milk · 28 °C</option>
-              <option value="vegetables">1.5 kg vegetables · 28 °C</option>
-              <option value="leftovers">
-                1.2 kg leftovers · 28 °C
-              </option></select
-            ><button id="addGroceries">Add groceries</button
-            ><button id="challengeStart">Start 24h challenge</button>
-          </div>
-          <p id="experimentInfo" aria-live="polite">
-            Load warm groceries and watch them cool. Use See inside to reveal
-            the airflow.
-          </p>
-          <div id="challengePanel" hidden>
-            <progress
-              id="challengeProgress"
-              max="86400"
-              value="0"
-              aria-label="Challenge progress"
-            ></progress
-            ><span id="challengeStats"></span>
-          </div>
-        </section>
+      <section
+        class="experience"
+        aria-label="Interactive refrigerator simulation"
+      >
         <div id="stage">
           <div id="startup" role="status">Preparing your kitchen…</div>
           <div class="stage-top">
@@ -49,6 +27,52 @@
             </div>
           </div>
           <div id="tags"></div>
+          <div class="stage-dock">
+            <details id="experimentPanel" name="stage-info">
+              <summary>Groceries &amp; challenge</summary>
+              <section class="experiment" aria-label="Kitchen experiments">
+                <div class="experiment-actions">
+                  <select id="groceryKind" aria-label="Warm groceries">
+                    <option value="milk">1 L milk · 28 °C</option>
+                    <option value="vegetables">
+                      1.5 kg vegetables · 28 °C
+                    </option>
+                    <option value="leftovers">
+                      1.2 kg leftovers · 28 °C
+                    </option></select
+                  ><button id="addGroceries">Add groceries</button
+                  ><button id="challengeStart">Start 24h challenge</button>
+                </div>
+                <p id="experimentInfo" aria-live="polite">
+                  Load warm groceries and watch them cool. Use See inside to
+                  reveal the airflow.
+                </p>
+                <div id="challengePanel" hidden>
+                  <progress
+                    id="challengeProgress"
+                    max="86400"
+                    value="0"
+                    aria-label="Challenge progress"
+                  ></progress
+                  ><span id="challengeStats"></span>
+                </div>
+              </section>
+            </details>
+            <details id="storyPanel" name="stage-info">
+              <summary>Component details</summary>
+              <div class="story">
+                <span class="story-icon" id="storyIcon">❄</span>
+                <div>
+                  <h2 id="storyTitle">Cold food. Warm kitchen.</h2>
+                  <p id="storyText">
+                    The refrigerator moves heat out of the cabinet and releases
+                    it into the room. Open the door, or look inside the cooling
+                    loop.
+                  </p>
+                </div>
+              </div>
+            </details>
+          </div>
           <div id="controlResponse" class="control-response" hidden>
             <strong id="responseTitle">Cooling response</strong>
             <div id="thermalResponse">
@@ -127,16 +151,6 @@
           <p class="orbit-hint">
             Blue: cold air · Orange: warm air / heat leakage · Drag to orbit
           </p>
-        </div>
-        <div class="story">
-          <span class="story-icon" id="storyIcon">❄</span>
-          <div>
-            <h2 id="storyTitle">Cold food. Warm kitchen.</h2>
-            <p id="storyText">
-              The refrigerator moves heat out of the cabinet and releases it
-              into the room. Open the door, or look inside the cooling loop.
-            </p>
-          </div>
         </div>
         <nav class="cycle" aria-label="Refrigeration cycle">
           <button data-part="compressor">

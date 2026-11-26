@@ -9,6 +9,15 @@ import { createScene } from "./scene.js";
 const $ = (id) => document.getElementById(id);
 let state = createState();
 const history = [];
+for (const id of ["experimentPanel", "storyPanel"]) {
+  $(id).addEventListener("toggle", () => {
+    if ($(id).open) {
+      $("controlResponse").hidden = true;
+      $(id === "experimentPanel" ? "storyPanel" : "experimentPanel").open =
+        false;
+    }
+  });
+}
 const styledRanges = [
   ...document.querySelectorAll('.controls input[type="range"]'),
 ].map((input) => {
@@ -63,6 +72,8 @@ const descriptions = {
   ],
 };
 function choose(key) {
+  $("storyPanel").open = true;
+  $("experimentPanel").open = false;
   $("storyTitle").textContent = descriptions[key][0];
   $("storyText").textContent = descriptions[key][1];
   document
@@ -111,6 +122,8 @@ for (const id of [
     ) {
       if (mode === "home") setMode("cutaway");
       $("controlResponse").hidden = false;
+      $("experimentPanel").open = false;
+      $("storyPanel").open = false;
       $("thermalResponse").hidden = visualId !== "setpoint";
       $("mechanicalResponse").hidden = visualId !== "displacement";
       $("insulationResponse").hidden = visualId !== "insulation";
@@ -146,6 +159,8 @@ $("pause").onclick = () => {
   $("pause").textContent = state.paused ? "Resume" : "Pause";
 };
 $("reset").onclick = () => {
+  $("storyPanel").open = false;
+  $("experimentPanel").open = false;
   state = createState();
   history.length = 0;
   for (const id of [
