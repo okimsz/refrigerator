@@ -86,7 +86,7 @@ main {
   display: grid;
   grid-template-columns: minmax(0, 1fr) 330px;
   height: calc(100dvh - 70px);
-  max-width: 1920px;
+  max-width: none;
   margin: auto;
 }
 .experience {
@@ -720,7 +720,9 @@ dialog a {
   --experiment-accent: #b47b43;
 }
 .experience {
-  grid-template-rows: auto auto minmax(200px, 1fr) auto auto;
+  grid-template-rows: auto minmax(200px, 1fr) auto auto;
+  padding-left: 14px;
+  padding-right: 14px;
 }
 .experiment {
   border: 1px solid var(--line);
@@ -766,7 +768,7 @@ button:disabled {
 }
 @media (max-width: 900px) {
   .experience {
-    grid-template-rows: auto auto minmax(340px, 54dvh) auto auto;
+    grid-template-rows: auto minmax(340px, 54dvh) auto auto;
   }
   .experiment-actions {
     flex-wrap: wrap;
